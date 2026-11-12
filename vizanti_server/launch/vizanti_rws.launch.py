@@ -1,5 +1,6 @@
 import launch
 import launch_ros.actions
+import os
 
 def generate_launch_description():
     base_url = launch.substitutions.LaunchConfiguration('base_url', default='') #e.g. /vizanti
@@ -9,6 +10,9 @@ def generate_launch_description():
     default_widget_config = launch.substitutions.LaunchConfiguration('default_widget_config', default='') #e.g. ~/your_custom_config.json
 
     #https://github.com/v-kiniv/rws
+    rmw = os.environ.get('RMW_IMPLEMENTATION') or 'rmw_fastrtps_cpp'
+    if rmw == 'rmw_fastrtps_cpp':
+        rmw = 'rmw_fastrtps_dynamic_cpp'
     rws_server_node = launch_ros.actions.Node(
         package='rws',
         executable='rws_server',
@@ -16,6 +20,7 @@ def generate_launch_description():
         output='screen',
         respawn=True,
         respawn_delay=2.0,
+        additional_env={'RMW_IMPLEMENTATION': rmw},
         parameters=[
             {'rosbridge_compatible ': True},
             {'port': port_rosbridge},

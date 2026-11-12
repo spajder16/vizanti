@@ -11,7 +11,11 @@ find_package(std_msgs REQUIRED)
 find_package(tf2_msgs REQUIRED)
 
 add_executable(tf_consolidator src/tf_consolidator.cpp)
-ament_target_dependencies(tf_consolidator rclcpp std_msgs tf2_msgs)
+target_link_libraries(tf_consolidator
+  rclcpp::rclcpp
+  std_msgs::std_msgs__rosidl_typesupport_cpp
+  tf2_msgs::tf2_msgs__rosidl_typesupport_cpp
+)
 
 install(TARGETS
   tf_consolidator
